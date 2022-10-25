@@ -1,0 +1,9 @@
+Part A
+(1) vulnerability
+The vulnerability that we discovered is the user part in the javascript file. As long as we insert an > into the code, we can add whatever javascript file we want.
+
+(2) how does the attack work
+We insert a > and add a script section. In the script section, we create a new Image and set its src to be the sendemail url with document.cookie as it payload. In order to stop the page from testing the username, we reset the document location so that it can return to the original user page.
+
+(3) how to mitigate the vulnerability
+We can check if there is a script section before appending it into the file.
