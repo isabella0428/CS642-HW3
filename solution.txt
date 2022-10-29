@@ -17,3 +17,38 @@ b. We add the script to automatically click the submit button when the victim lo
 c. After a time elapse, we get the response from transfer.php and shows it in the hidden iframe, we redirect the window to www.bing.com.
 
 3. The problem can be mitigated by using content security policy to define which operations are allowed on the browser. Also, we can add browser XSS filters.
+
+Attack C:
+1. The vulnerability here is in the checkLogin part.
+In the fucntion _addRegistration():
+We register the username with quoted($username):
+$sql = "INSERT INTO Person (Username, Password, Salt) " .
+           "VALUES ('$quoteduser', '$hashedpassword', '$salt')";
+Then we login into the user account,.
+
+In the function _checkLogin():
+// It first checks if the user exists using the $quoteduser.
+$quoteduser = $this->db->quote($username);
+$sql = "SELECT Salt FROM Person WHERE Username = '$quoteduser'";
+$rs = $this->db->executeQuery($sql);
+if ( !$rs->next() ) return false;   // No such user
+
+But then when we are trying to validate if the username and the password match, we use $username.
+$salt = $rs->getValueByNr(0,0);
+$hashedpassword = md5($password.$salt);
+$sql = "SELECT * FROM Person WHERE " .
+           "Username = '$username' AND " .
+           "Password = '$hashedpassword'";
+$result = $this->db->executeQuery($sql);
+
+It makes it possible that $quoteduser exists, but it is not the same user as $username. And also the response page of registering and logining page looks exactly the same. We can register a new user with similar username but with "'--", but log in as the original username.
+
+2. Our attack is to create a user with username equals quoted($username) and $username contains "'--" go comment out the password comparison in sql queries.
+In order to avoid registering duplicate user when we are inputting the same username on the website multiple times, we add a random value to the username.
+The whole workflow of the website is listed below.
+a. The user inputs the username on the website
+b. When the user clicks login, we are actually modifying the username the user inputs.
+$username = $username(user inputs) + "'--" + Math.floor(Math.random() * 10000);
+c. We submit the form to registeration instead of login
+
+3. To prevent the attack, we need to make sure that we use consistent version of $username. That means always using the $quoteduser when we are executing sql queries. Also, we can add additional information to make sure that the login page and registering page return different response page and it is easy to tell the differences.
