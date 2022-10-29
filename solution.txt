@@ -7,3 +7,13 @@ We insert a > and add a script section. In the script section, we create a new I
 
 (3) how to mitigate the vulnerability
 We can check if there is a script section before appending it into the file.
+
+Attack B:
+1. The vulnerability is that the browser will automatically send the cookie when we submit the transfer zoobars form. Anyone that can trick the victim to send a form can send the zoobars on the behalf of the victim. It is a typical XSS attack.
+
+2. Our attack to do that is:
+a. First create a form that looks very similar to the transferForm in transfer.php. But we just keep the input and submit html tags and set visibility to hidden.
+b. We add the script to automatically click the submit button when the victim load the html file. In order to wait for the response, we use setTimeout before we change the window location. One thing to notice here is that we need to send the form target to another frame. The reason for doing that is that the form response will automatically replace the original frame and cover the remaining codes(change window location). So we create another frame and set the form's target to that frame. That frame's visibility is also set to hidden as well.
+c. After a time elapse, we get the response from transfer.php and shows it in the hidden iframe, we redirect the window to www.bing.com.
+
+3. The problem can be mitigated by using content security policy to define which operations are allowed on the browser. Also, we can add browser XSS filters.

